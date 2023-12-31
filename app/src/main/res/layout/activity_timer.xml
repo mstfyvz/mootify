@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.TimerActivity">
+
+    <ImageView
+        android:id="@+id/imageView_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/sayacc"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView_open_music"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="35dp"
+        android:src="@drawable/img_4"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="@+id/imageView_close_music"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView_close_music"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="35dp"
+        android:src="@drawable/img_58"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toStartOf="@+id/imageView_close"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView_animate"
+        android:layout_width="1000dp"
+        android:layout_height="320dp"
+        android:layout_marginBottom="250dp"
+        app:layout_constraintBottom_toBottomOf="@id/imageView_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView_close"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="35dp"
+        android:layout_marginEnd="25dp"
+        android:src="@drawable/exit"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView_timer"
+        android:layout_width="300dp"
+        android:layout_height="100dp"
+        android:layout_marginBottom="-120dp"
+        android:text="00:00:00"
+        android:textSize="75sp"
+        app:layout_constraintBottom_toTopOf="@+id/imageView_animate"
+        app:layout_constraintEnd_toEndOf="@+id/imageView_animate"
+        app:layout_constraintStart_toStartOf="@+id/imageView_animate" />
+
+    <ImageView
+        android:id="@+id/imageView_start_timer"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="250dp"
+        android:src="@drawable/startt"
+        app:layout_constraintStart_toStartOf="@id/textView_timer"
+        app:layout_constraintTop_toBottomOf="@+id/textView_timer" />
+
+    <ImageView
+        android:id="@+id/imageView_pause_timer"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="250dp"
+        android:src="@drawable/pause"
+        app:layout_constraintBottom_toBottomOf="@id/imageView_start_timer"
+        app:layout_constraintStart_toEndOf="@+id/imageView_start_timer" />
+
+    <ImageView
+        android:id="@+id/imageView_reset_timer"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="250dp"
+        android:src="@drawable/reset"
+        app:layout_constraintBottom_toBottomOf="@id/imageView_pause_timer"
+        app:layout_constraintStart_toEndOf="@+id/imageView_pause_timer" />
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.MainActivity">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imageView_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/img"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <ImageView
+        android:id="@+id/imageView_play"
+        android:layout_width="1700dp"
+        android:layout_height="1100dp"
+        android:layout_centerInParent="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.512"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.436" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imageView_menu"
+        android:layout_width="62dp"
+        android:layout_height="62dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="15dp"
+        android:focusable="true"
+        android:src="@drawable/img_2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imageView_tick"
+        android:layout_width="47dp"
+        android:layout_height="47dp"
+        android:layout_marginTop="9dp"
+        android:src="@drawable/img_3"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@id/imageView_menu"
+        app:layout_constraintStart_toStartOf="@id/imageView_menu"
+        app:layout_constraintTop_toBottomOf="@id/imageView_menu" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imageView_music"
+        android:layout_width="47dp"
+        android:layout_height="47dp"
+        android:layout_marginTop="9dp"
+        android:src="@drawable/img_4"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@id/imageView_tick"
+        app:layout_constraintStart_toStartOf="@id/imageView_tick"
+        app:layout_constraintTop_toBottomOf="@id/imageView_tick" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imageView_timer"
+        android:layout_width="47dp"
+        android:layout_height="47dp"
+        android:layout_marginTop="9dp"
+        android:src="@drawable/img_5"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@id/imageView_music"
+        app:layout_constraintStart_toStartOf="@id/imageView_music"
+        app:layout_constraintTop_toBottomOf="@id/imageView_music" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imageView_effort"
+        android:layout_width="47dp"
+        android:layout_height="47dp"
+        android:layout_marginTop="9dp"
+        android:src="@drawable/img_5"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@id/imageView_music"
+        app:layout_constraintStart_toStartOf="@id/imageView_music"
+        app:layout_constraintTop_toBottomOf="@id/imageView_timer" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imageView_settings"
+        android:layout_width="47dp"
+        android:layout_height="47dp"
+        android:layout_marginTop="9dp"
+        android:src="@drawable/img_6"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@id/imageView_timer"
+        app:layout_constraintStart_toStartOf="@id/imageView_timer"
+        app:layout_constraintTop_toBottomOf="@id/imageView_effort" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/score"
+        android:layout_width="140dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="54dp"
+        android:src="@drawable/img_1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/textView_named"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="-5dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:textColorHint="#673AB7"
+        android:textSize="16sp"
+        android:textStyle="italic"
+        app:autoSizeTextType="none"
+        app:layout_constraintEnd_toEndOf="@id/score"
+        app:layout_constraintHorizontal_bias="0.142"
+        app:layout_constraintStart_toStartOf="@id/score"
+        app:layout_constraintTop_toBottomOf="@id/score" />
+
+    <ImageView
+        android:id="@+id/design"
+        android:layout_width="wrap_content"
+        android:layout_height="140dp"
+        android:layout_marginEnd="-129dp"
+        android:layout_marginBottom="-5dp"
+        android:src="@drawable/img_65"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="600dp"
+        android:layout_marginEnd="80dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        />
+
+    <TextView
+        android:id="@+id/textView_timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="70dp"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@id/progressBar"
+        app:layout_constraintTop_toTopOf="@id/progressBar" />
+
+    <TextView
+        android:id="@+id/textView_score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="88dp"
+        android:layout_marginTop="37dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="@string/_0"
+        android:textSize="17sp"
+        />
+
+
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Mootify</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="name">Name</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="daily_working_hours">Daily Working Hours</string>
+    <string name="sign_in">Sign In</string>
+    <string name="_0">0</string>
+    <string name="_1">1</string>
+    <string name="_2">2</string>
+    <string name="_3">3</string>
+    <string name="_4">4</string>
+    <string name="_5">5</string>
+    <string name="_6">6</string>
+    <string name="_7">7</string>
+    <string name="_8">8</string>
+    <string name="_9">9</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">Ok</string>
+    <string name="please_enter_note_here">Please enter note here.</string>
+    <string name="title">Title</string>
+</resources>

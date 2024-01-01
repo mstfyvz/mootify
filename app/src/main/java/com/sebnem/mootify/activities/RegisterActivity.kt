@@ -3,12 +3,10 @@ package com.sebnem.mootify.activities
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.widget.EditText
-import android.widget.TextView
+import android.os.Looper
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.raizlabs.android.dbflow.sql.language.SQLite
-import com.sebnem.mootify.R
 import com.sebnem.mootify.databinding.ActivityRegisterBinding
 import com.sebnem.mootify.db.User
 import com.sebnem.mootify.db.User_Table
@@ -52,13 +50,13 @@ class RegisterActivity : AppCompatActivity() {
                 val newUser = User(
                     username = inputUsername,
                     password = inputPassword,
-                    time = inputTime.toInt()
+                    time = inputTime.toInt(),
+                    remainingTime = inputTime.toInt(),
                 )
                 newUser.save()
                 Toast.makeText(this, "Kayıt alındı. Lütfen bekleyin...", Toast.LENGTH_SHORT).show()
 
-                val handler = Handler()
-                handler.postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     startActivity(Intent(this, LoginActivity::class.java))
                 }, 2000)
             }

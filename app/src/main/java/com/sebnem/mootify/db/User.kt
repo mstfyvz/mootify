@@ -25,5 +25,8 @@ data class User(
     var password: String? = null,
 
     @Column
-    var time: Int? = null
+    var time: Int? = null,
+
+    @Column
+    var remainingTime: Int? = null
 ) : BaseModel()

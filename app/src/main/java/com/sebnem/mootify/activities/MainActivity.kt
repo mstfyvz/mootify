@@ -5,22 +5,28 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
-import android.widget.ImageView
 import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.raizlabs.android.dbflow.config.DatabaseConfig
-import com.raizlabs.android.dbflow.config.FlowConfig
-import com.raizlabs.android.dbflow.config.FlowManager
+import com.raizlabs.android.dbflow.sql.language.SQLite
 import com.sebnem.mootify.R
 import com.sebnem.mootify.databinding.ActivityMainBinding
-import com.sebnem.mootify.db.AppDatabase
+import com.sebnem.mootify.db.ScoreTable
+import com.sebnem.mootify.db.ScoreTable_Table
 import com.sebnem.mootify.db.User
+import com.sebnem.mootify.util.DateUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.util.Date
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var skor = -1
+    private var countDownTimer: CountDownTimer? = null
+    private var scoreTable: ScoreTable? = null
 
     companion object {
         lateinit var currentUser: User
@@ -103,6 +109,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupMenuButton()
+        setupScoreTable()
         setupCountdown()
 
         binding.imageViewPlay.setImageResource(images[currentIndex])
@@ -119,25 +126,19 @@ class MainActivity : AppCompatActivity() {
     private fun setupMenuButton() {
         var isMenuOpen = false
 
-        binding.imageViewMenu.setOnClickListener {
-            Handler(Looper.getMainLooper()).postDelayed(
-                { binding.imageViewTick.visibility = if (isMenuOpen) View.INVISIBLE else View.VISIBLE },
-                100
-            )
-            Handler(Looper.getMainLooper()).postDelayed(
-                { binding.imageViewMusic.visibility = if (isMenuOpen) View.INVISIBLE else View.VISIBLE },
-                200
-            )
-            Handler(Looper.getMainLooper()).postDelayed(
-                { binding.imageViewTimer.visibility = if (isMenuOpen) View.INVISIBLE else View.VISIBLE },
-                300
-            )
-            Handler(Looper.getMainLooper()).postDelayed(
-                { binding.imageViewEffort.visibility = if (isMenuOpen) View.INVISIBLE else View.VISIBLE },
-                400
-            )
-            Handler(Looper.getMainLooper()).postDelayed(
-                {
+        binding.apply {
+            imageViewMenu.setOnClickListener {
+                val visibility = if (isMenuOpen) View.INVISIBLE else View.VISIBLE
+                CoroutineScope(Dispatchers.Main).launch {
+                    delay(100)
+                    binding.imageViewTick.visibility = visibility
+                    delay(100)
+                    binding.imageViewMusic.visibility = visibility
+                    delay(100)
+                    binding.imageViewTimer.visibility = visibility
+                    delay(100)
+                    binding.imageViewEffort.visibility = visibility
+                    delay(100)
                     binding.imageViewSettings.visibility = if (isMenuOpen) {
                         isMenuOpen = false
                         View.INVISIBLE
@@ -145,35 +146,101 @@ class MainActivity : AppCompatActivity() {
                         isMenuOpen = true
                         View.VISIBLE
                     }
-                }, 500
-            )
-        }
+                }
+            }
 
-
-        binding.imageViewTimer.setOnClickListener {
-            startActivity(Intent(this@MainActivity, TimerActivity::class.java))
-        }
-        binding.imageViewTick.setOnClickListener {
-            startActivity(Intent(this,CheckListActivity::class.java))
+            imageViewTimer.setOnClickListener {
+                startActivity(Intent(this@MainActivity, TimerActivity::class.java))
+            }
+            imageViewTick.setOnClickListener {
+                startActivity(Intent(this@MainActivity, CheckListActivity::class.java))
+            }
+            imageViewEffort.setOnClickListener {
+                startActivity(Intent(this@MainActivity, ScoreTableActivity::class.java))
+            }
         }
     }
 
+    private fun setupScoreTable() {
+        val scoreTableList = SQLite.select().from(ScoreTable::class.java)
+            .where(ScoreTable_Table.username.eq(currentUser.username.toString()))
+            .queryList()
+
+        if (scoreTableList.isEmpty()) {
+            scoreTable = ScoreTable(
+                username = currentUser.username,
+                date = DateUtil.getCurrentDateTime(),
+                score = 0
+            )
+            scoreTable?.save()
+        }
+
+        val lastScoreTable = scoreTableList.last()
+        lastScoreTable.date?.let { lastScoreDate ->
+            val dateFormat = DateUtil.getDate(lastScoreDate)
+            dateFormat?.let { dateFormatted ->
+                val year = DateUtil.getYear(dateFormatted)
+                val month = DateUtil.getMonthNumber(dateFormatted)
+                val day = DateUtil.getDay(dateFormatted)
+
+                val currentDate = Date()
+                val currentYear = DateUtil.getYear(currentDate)
+                val currentMonth = DateUtil.getMonthNumber(currentDate)
+                val currentDay = DateUtil.getDay(currentDate)
+
+                if (currentYear == year && currentMonth == month && currentDay == day) {
+                    scoreTable = lastScoreTable
+                    return
+                }
+
+                scoreTable = ScoreTable(
+                    username = currentUser.username,
+                    date = DateUtil.getCurrentDateTime(),
+                    score = 0
+                )
+                scoreTable?.save()
+            }
+        }
+
+        Log.i("Skor Tablosu", scoreTable.toString())
+    }
+
     private fun setupCountdown() {
-        val timerValue = currentUser.time
+        val time = currentUser.time
+        val timerValue = currentUser.remainingTime
+        scoreTable?.score?.let {
+            skor = it * 60 * 60
+            binding.textViewScore.text = it.toString()
+        }
+
+        time?.let {
+            binding.progressBar.max = it * 60 // Saati dakikaya çeviriyoruz
+        }
 
         timerValue?.let {
-            binding.progressBar.max = it * 60 // Saati dakikaya çeviriyoruz
-
-            val countDownTimer = object : CountDownTimer((it * 60 * 1000).toLong(), 3600000) {
+            countDownTimer = object : CountDownTimer((it * 60 * 60 * 1000).toLong(), 1000) {
                 // 60000 milisaniye (1 dakika) aralıklarla çağrılacak
                 override fun onTick(millisUntilFinished: Long) {
-                    val minutesLeft = millisUntilFinished / 60000
-                    val progress = (it * 60 - minutesLeft).toInt()
+                    val hour = 60 * 60 * 1000
+                    val hourLeft = millisUntilFinished / hour + 1
+                    val progress = (millisUntilFinished / 60 / 1000).toInt()
+                    skor++
 
                     binding.progressBar.progress = progress
-                    binding.textViewTimer.text = "${minutesLeft+1} Hours Left"
-                    skor++
-                    binding.textViewScore.text = "$skor"
+                    binding.textViewTimer.text = "$hourLeft Hours Left"
+                    if (currentUser.remainingTime != hourLeft.toInt()) {
+                        val scored = skor / 60 / 60
+                        binding.textViewScore.text = "$scored"
+                        currentUser.remainingTime = hourLeft.toInt()
+                        currentUser.update()
+                        scoreTable?.score = scored
+                        scoreTable?.update()
+
+                        Log.i("SKOR", scored.toString())
+                    }
+                    if (hourLeft == 0L) {
+                        countDownTimer?.cancel()
+                    }
                 }
 
                 override fun onFinish() {
@@ -182,7 +249,9 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            countDownTimer.start()
+            if (it != 0) {
+                countDownTimer?.start()
+            }
         }
     }
 

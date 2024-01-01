@@ -2,24 +2,21 @@ package com.sebnem.mootify.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.widget.EditText
-import android.widget.TextView
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.raizlabs.android.dbflow.config.DatabaseConfig
 import com.raizlabs.android.dbflow.config.FlowConfig
 import com.raizlabs.android.dbflow.config.FlowManager
 import com.raizlabs.android.dbflow.sql.language.SQLite
-import com.sebnem.mootify.R
 import com.sebnem.mootify.databinding.ActivityLoginBinding
 import com.sebnem.mootify.db.AppDatabase
 import com.sebnem.mootify.db.LoginHistory
+import com.sebnem.mootify.db.LoginHistory_Table
 import com.sebnem.mootify.db.User
 import com.sebnem.mootify.db.User_Table
-import java.text.SimpleDateFormat
+import com.sebnem.mootify.util.DateUtil
 import java.util.Date
-import java.util.Locale
 
 class LoginActivity : AppCompatActivity() {
 
@@ -44,12 +41,15 @@ class LoginActivity : AppCompatActivity() {
                 if (foundUser != null) {
                     if (inputPassword == foundUser.password) {
                         Toast.makeText(this, "Kullanıcı Doğru! Bekleyin...", Toast.LENGTH_SHORT).show()
+                        updateRemainingTime(foundUser)
                         val loginAction = LoginHistory(
                             username = foundUser.username,
                             password = foundUser.password,
-                            date = getCurrentDateTime()
+                            date = DateUtil.getCurrentDateTime()
                         )
                         loginAction.save()
+                        Log.i("LoginHistory", loginAction.toString())
+                        Log.i("User", foundUser.toString())
                         MainActivity.currentUser = foundUser
                         startActivity(Intent(this,MainActivity::class.java))
                     } else {
@@ -67,6 +67,40 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    private fun updateRemainingTime(foundUser: User) {
+        val loginHistory = SQLite.select().from(LoginHistory::class.java).where(LoginHistory_Table.username.eq(binding.editTextUsername.text.toString())).querySingle()
+        loginHistory?.date?.let { lastLoginDate ->
+            val dateFormat = DateUtil.getDate(lastLoginDate)
+            dateFormat?.let {  dateFormatted ->
+                val year = DateUtil.getYear(dateFormatted)
+                val month = DateUtil.getMonthNumber(dateFormatted)
+                val day = DateUtil.getDay(dateFormatted)
+
+                val currentDate = Date()
+                val currentYear = DateUtil.getYear(currentDate)
+                val currentMonth = DateUtil.getMonthNumber(currentDate)
+                val currentDay = DateUtil.getDay(currentDate)
+
+                if (currentYear != year) {
+                    updateRemainingColumn(foundUser)
+                    return
+                }
+                if (currentMonth != month) {
+                    updateRemainingColumn(foundUser)
+                    return
+                }
+                if (currentDay > day) {
+                    updateRemainingColumn(foundUser)
+                }
+            }
+        }
+    }
+
+    private fun updateRemainingColumn(foundUser: User) {
+        foundUser.remainingTime = foundUser.time
+        foundUser.update()
+    }
+
     private fun initDatabase() {
         FlowManager.init(
             FlowConfig.Builder(this)
@@ -80,9 +114,4 @@ class LoginActivity : AppCompatActivity() {
         )
     }
 
-    private fun getCurrentDateTime(): String {
-        val dateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault())
-        val currentDate = Date()
-        return dateFormat.format(currentDate)
-    }
 }

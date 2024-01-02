@@ -16,6 +16,9 @@ import com.sebnem.mootify.db.LoginHistory_Table
 import com.sebnem.mootify.db.User
 import com.sebnem.mootify.db.User_Table
 import com.sebnem.mootify.util.DateUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.Date
 
 class LoginActivity : AppCompatActivity() {
@@ -97,8 +100,13 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun updateRemainingColumn(foundUser: User) {
-        foundUser.remainingTime = foundUser.time
-        foundUser.update()
+        CoroutineScope(Dispatchers.Main).launch {
+            SQLite.update(User::class.java)
+                .set(User_Table.remainingTime.eq(foundUser.time))
+                .where(User_Table.username.eq(foundUser.username))
+                .async()
+                .execute()
+        }
     }
 
     private fun initDatabase() {

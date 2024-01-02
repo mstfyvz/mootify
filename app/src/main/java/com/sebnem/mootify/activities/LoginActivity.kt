@@ -23,7 +23,7 @@ import java.util.Date
 
 class LoginActivity : AppCompatActivity() {
 
-    private lateinit var binding : ActivityLoginBinding
+    private lateinit var binding: ActivityLoginBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,12 +35,15 @@ class LoginActivity : AppCompatActivity() {
             val inputUsername = binding.editTextUsername.text.toString()
             val inputPassword = binding.editTextPassword.text.toString()
 
-            if (inputUsername.isEmpty()){
+            if (inputUsername.isEmpty()) {
                 Toast.makeText(this, "Lütfen kullanıcı adı giriniz.", Toast.LENGTH_SHORT).show()
             } else if (inputPassword.isEmpty()) {
                 Toast.makeText(this, "Lütfen şifre giriniz.", Toast.LENGTH_SHORT).show()
             } else {
-                val foundUser = SQLite.select().from(User::class.java).where(User_Table.username.eq(inputUsername)).querySingle()
+                val foundUser = SQLite.select()
+                    .from(User::class.java)
+                    .where(User_Table.username.eq(inputUsername))
+                    .querySingle()
                 if (foundUser != null) {
                     if (inputPassword == foundUser.password) {
                         Toast.makeText(this, "Kullanıcı Doğru! Bekleyin...", Toast.LENGTH_SHORT).show()
@@ -54,7 +57,7 @@ class LoginActivity : AppCompatActivity() {
                         Log.i("LoginHistory", loginAction.toString())
                         Log.i("User", foundUser.toString())
                         MainActivity.currentUser = foundUser
-                        startActivity(Intent(this,MainActivity::class.java))
+                        startActivity(Intent(this, MainActivity::class.java))
                     } else {
                         Toast.makeText(this, "Yanlış şifre! Tekrar deneyin.", Toast.LENGTH_SHORT).show()
                     }
@@ -71,31 +74,37 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun updateRemainingTime(foundUser: User) {
-        val loginHistory = SQLite.select().from(LoginHistory::class.java).where(LoginHistory_Table.username.eq(binding.editTextUsername.text.toString())).querySingle()
-        loginHistory?.date?.let { lastLoginDate ->
-            val dateFormat = DateUtil.getDate(lastLoginDate)
-            dateFormat?.let {  dateFormatted ->
-                val year = DateUtil.getYear(dateFormatted)
-                val month = DateUtil.getMonthNumber(dateFormatted)
-                val day = DateUtil.getDay(dateFormatted)
+        val loginHistory = SQLite.select().from(LoginHistory::class.java)
+            .where(LoginHistory_Table.username.eq(binding.editTextUsername.text.toString()))
+            .queryList()
+        try {
+            loginHistory.last()?.date?.let { lastLoginDate ->
+                val dateFormat = DateUtil.getDate(lastLoginDate)
+                dateFormat?.let { dateFormatted ->
+                    val year = DateUtil.getYear(dateFormatted)
+                    val month = DateUtil.getMonthNumber(dateFormatted)
+                    val day = DateUtil.getDay(dateFormatted)
 
-                val currentDate = Date()
-                val currentYear = DateUtil.getYear(currentDate)
-                val currentMonth = DateUtil.getMonthNumber(currentDate)
-                val currentDay = DateUtil.getDay(currentDate)
+                    val currentDate = Date()
+                    val currentYear = DateUtil.getYear(currentDate)
+                    val currentMonth = DateUtil.getMonthNumber(currentDate)
+                    val currentDay = DateUtil.getDay(currentDate)
 
-                if (currentYear != year) {
-                    updateRemainingColumn(foundUser)
-                    return
-                }
-                if (currentMonth != month) {
-                    updateRemainingColumn(foundUser)
-                    return
-                }
-                if (currentDay > day) {
-                    updateRemainingColumn(foundUser)
+                    if (currentYear != year) {
+                        updateRemainingColumn(foundUser)
+                        return
+                    }
+                    if (currentMonth != month) {
+                        updateRemainingColumn(foundUser)
+                        return
+                    }
+                    if (currentDay > day) {
+                        updateRemainingColumn(foundUser)
+                    }
                 }
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 

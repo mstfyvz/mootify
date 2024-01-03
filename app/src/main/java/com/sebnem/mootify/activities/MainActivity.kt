@@ -136,8 +136,8 @@ class MainActivity : AppCompatActivity() {
                     binding.imageViewMusic.visibility = visibility
                     delay(100)
                     binding.imageViewTimer.visibility = visibility
-                    delay(100)
-                    binding.imageViewEffort.visibility = visibility
+                    // delay(100)
+                    // binding.imageViewEffort.visibility = visibility
                     delay(100)
                     binding.imageViewSettings.visibility = if (isMenuOpen) {
                         isMenuOpen = false

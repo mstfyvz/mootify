@@ -162,47 +162,52 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupScoreTable() {
-        val scoreTableList = SQLite.select().from(ScoreTable::class.java)
-            .where(ScoreTable_Table.username.eq(currentUser.username.toString()))
-            .queryList()
+        try {
+            val scoreTableList = SQLite.select().from(ScoreTable::class.java)
+                .where(ScoreTable_Table.username.eq(currentUser.username.toString()))
+                .queryList()
 
-        if (scoreTableList.isEmpty()) {
-            scoreTable = ScoreTable(
-                username = currentUser.username,
-                date = DateUtil.getCurrentDateTime(),
-                score = 0
-            )
-            scoreTable?.save()
-        }
-
-        val lastScoreTable = scoreTableList.last()
-        lastScoreTable.date?.let { lastScoreDate ->
-            val dateFormat = DateUtil.getDate(lastScoreDate)
-            dateFormat?.let { dateFormatted ->
-                val year = DateUtil.getYear(dateFormatted)
-                val month = DateUtil.getMonthNumber(dateFormatted)
-                val day = DateUtil.getDay(dateFormatted)
-
-                val currentDate = Date()
-                val currentYear = DateUtil.getYear(currentDate)
-                val currentMonth = DateUtil.getMonthNumber(currentDate)
-                val currentDay = DateUtil.getDay(currentDate)
-
-                if (currentYear == year && currentMonth == month && currentDay == day) {
-                    scoreTable = lastScoreTable
-                    return
-                }
-
+            if (scoreTableList.isEmpty()) {
                 scoreTable = ScoreTable(
                     username = currentUser.username,
                     date = DateUtil.getCurrentDateTime(),
                     score = 0
                 )
                 scoreTable?.save()
+                return
             }
-        }
 
-        Log.i("Skor Tablosu", scoreTable.toString())
+            val lastScoreTable = scoreTableList.last()
+            lastScoreTable.date?.let { lastScoreDate ->
+                val dateFormat = DateUtil.getDate(lastScoreDate)
+                dateFormat?.let { dateFormatted ->
+                    val year = DateUtil.getYear(dateFormatted)
+                    val month = DateUtil.getMonthNumber(dateFormatted)
+                    val day = DateUtil.getDay(dateFormatted)
+
+                    val currentDate = Date()
+                    val currentYear = DateUtil.getYear(currentDate)
+                    val currentMonth = DateUtil.getMonthNumber(currentDate)
+                    val currentDay = DateUtil.getDay(currentDate)
+
+                    if (currentYear == year && currentMonth == month && currentDay == day) {
+                        scoreTable = lastScoreTable
+                        return
+                    }
+
+                    scoreTable = ScoreTable(
+                        username = currentUser.username,
+                        date = DateUtil.getCurrentDateTime(),
+                        score = 0
+                    )
+                    scoreTable?.save()
+                }
+            }
+
+            Log.i("Skor Tablosu", scoreTable.toString())
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun setupCountdown() {

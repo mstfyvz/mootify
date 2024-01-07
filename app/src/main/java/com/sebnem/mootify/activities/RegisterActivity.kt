@@ -8,8 +8,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.raizlabs.android.dbflow.sql.language.SQLite
 import com.sebnem.mootify.databinding.ActivityRegisterBinding
+import com.sebnem.mootify.db.ScoreTable
 import com.sebnem.mootify.db.User
 import com.sebnem.mootify.db.User_Table
+import com.sebnem.mootify.util.DateUtil
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -54,6 +56,12 @@ class RegisterActivity : AppCompatActivity() {
                     remainingTime = inputTime.toInt(),
                 )
                 newUser.save()
+                val scoreTable = ScoreTable(
+                    username = MainActivity.currentUser.username,
+                    date = DateUtil.getCurrentDateTime(),
+                    score = 0
+                )
+                scoreTable.save()
                 Toast.makeText(this, "Kayıt alındı. Lütfen bekleyin...", Toast.LENGTH_SHORT).show()
 
                 Handler(Looper.getMainLooper()).postDelayed({

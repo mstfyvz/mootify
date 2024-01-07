@@ -57,7 +57,7 @@ class RegisterActivity : AppCompatActivity() {
                 )
                 newUser.save()
                 val scoreTable = ScoreTable(
-                    username = MainActivity.currentUser.username,
+                    username = inputUsername,
                     date = DateUtil.getCurrentDateTime(),
                     score = 0
                 )
